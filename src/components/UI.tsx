@@ -16,8 +16,8 @@ export default () => {
         (() => {
           const currentSegment = passedPreparation ? "breaths" : "preparation"
           const currentExcercise = excercises[selectedExcercise][currentSegment]
-          const currentState = currentBreath ? currentExcercise[currentBreath.stateNum - 1].state : "hold"
-          const currentDescription = currentExcercise[currentBreath.stateNum - 1].description
+          const currentState = currentBreath ? currentExcercise[currentBreath.stateNum].state : "hold"
+          const currentDescription = currentExcercise[currentBreath.stateNum].description
           const text = currentDescription ?? currentState
 
           return <div className="w-full max-w-[50vw] absolute top-0 left-0 text-xl p-2">{text}</div>
@@ -29,8 +29,8 @@ export default () => {
         (() => {
           const currentSegment = passedPreparation ? "breaths" : "preparation"
           const currentExcercise = excercises[selectedExcercise][currentSegment]
-          const currentDuration = currentExcercise[currentBreath.stateNum - 1].duration
-          return <div className="absolute top-0 right-0 text-3xl p-2">{currentDuration - currentBreath.step + 1}</div>
+          const currentDuration = currentExcercise[currentBreath.stateNum].duration
+          return <div className="absolute top-0 right-0 text-3xl p-2">{currentDuration - currentBreath.step}</div>
         })()}
 
       {/* end exercise */}

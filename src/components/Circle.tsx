@@ -27,7 +27,7 @@ export default () => {
 
   useEffect(() => {
     if (started) {
-      setCurrentBreath({ stateNum: 1, step: 1 })
+      setCurrentBreath({ stateNum: 0, step: 0 })
     } else {
       passPreparation(false)
       setCurrentBreath(null)
@@ -42,8 +42,8 @@ export default () => {
 
     const currentSegment = passedPreparation ? "breaths" : "preparation"
     const currentExcercise = excercises[selectedExcercise][currentSegment]
-    const currentState = currentExcercise[currentBreath.stateNum - 1].state
-    const currentDuration = currentExcercise[currentBreath.stateNum - 1].duration
+    const currentState = currentExcercise[currentBreath.stateNum].state
+    const currentDuration = currentExcercise[currentBreath.stateNum].duration
 
     setCurrWidth((prev) => {
       switch (currentState) {
@@ -56,14 +56,14 @@ export default () => {
       }
     })
 
-    const newStateNum = currentBreath.step === currentDuration ? currentBreath.stateNum + 1 : currentBreath.stateNum
-    const actualNewStateNum = newStateNum > currentExcercise.length ? 1 : newStateNum
-    const newStep = currentBreath.step === currentDuration ? 1 : currentBreath.step + 1
+    const newStateNum = currentBreath.step === currentDuration - 1 ? currentBreath.stateNum + 1 : currentBreath.stateNum
+    const actualNewStateNum = newStateNum === currentExcercise.length ? 0 : newStateNum
+    const newStep = currentBreath.step === currentDuration - 1 ? 0 : currentBreath.step + 1
     const timeoutId = setTimeout(() => {
       if (
         !passedPreparation &&
-        currentBreath.stateNum === currentExcercise.length &&
-        currentBreath.step === currentDuration
+        currentBreath.stateNum === currentExcercise.length - 1 &&
+        currentBreath.step === currentDuration - 1
       ) {
         passPreparation()
       }
@@ -88,11 +88,11 @@ export default () => {
         style={(() => {
           const currentSegment = passedPreparation ? "breaths" : "preparation"
           const currentExcercise = excercises[selectedExcercise][currentSegment]
-          const currentState = currentBreath ? currentExcercise[currentBreath.stateNum - 1].state : "hold"
-          const currentDuration = currentBreath ? currentExcercise[currentBreath.stateNum - 1].duration : 1
+          const currentState = currentBreath ? currentExcercise[currentBreath.stateNum].state : "hold"
+          const currentDuration = currentBreath ? currentExcercise[currentBreath.stateNum].duration : 0
 
           const prevState =
-            currentBreath && currentBreath.stateNum > 1 ? currentExcercise[currentBreath.stateNum - 2].state : null
+            currentBreath && currentBreath.stateNum ? currentExcercise[currentBreath.stateNum - 1].state : null
 
           const shadowWidth =
             currentState === "inhale" ? 5 : currentState === "exhale" ? 3 : prevState === "inhale" ? 2 : 1.5
