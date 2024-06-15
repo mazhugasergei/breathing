@@ -89,7 +89,7 @@ export default () => {
           const currentSegment = passedPreparation ? "breaths" : "preparation"
           const currentExcercise = excercises[selectedExcercise][currentSegment]
           const currentState = currentBreath ? currentExcercise[currentBreath.stateNum].state : "hold"
-          const currentDuration = currentBreath ? currentExcercise[currentBreath.stateNum].duration : 0
+          const currentDuration = currentBreath ? currentExcercise[currentBreath.stateNum].duration : 1
 
           const prevState =
             currentBreath && currentBreath.stateNum ? currentExcercise[currentBreath.stateNum - 1].state : null
