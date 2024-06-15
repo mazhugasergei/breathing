@@ -106,7 +106,7 @@ export default () => {
       >
         {!started && (
           <button onClick={start} className="w-full h-full">
-            Start
+            start
           </button>
         )}
       </div>

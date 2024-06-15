@@ -1,6 +1,11 @@
 import { create } from "zustand"
 
 type CurrentBreathState = { stateNum: number; step: number }
+type Excercise = {
+  name: string
+  preparation: { state: string; duration: number; description?: string }[]
+  breaths: { state: string; duration: number; description?: string }[]
+}
 
 interface State {
   excercises: typeof excercises
@@ -18,12 +23,12 @@ interface Actions {
 }
 
 // breathing may not start from "hold"
-const excercises = {
+const excercises: { [key: string]: Excercise } = {
   test: {
     name: "Test",
     preparation: [
       { state: "inhale", duration: 2 },
-      { state: "exhale", duration: 2, description: "Exhale as much as you can" },
+      { state: "exhale", duration: 2, description: "exhale as much as you can" },
     ],
     breaths: [
       { state: "inhale", duration: 3 },
@@ -36,7 +41,7 @@ const excercises = {
     name: "Calming 2-2",
     preparation: [
       { state: "inhale", duration: 2 },
-      { state: "exhale", duration: 2, description: "Exhale as much as you can" },
+      { state: "exhale", duration: 2, description: "exhale as much as you can" },
     ],
     breaths: [
       { state: "inhale", duration: 2 },
@@ -47,7 +52,7 @@ const excercises = {
     name: "Calming 3-3",
     preparation: [
       { state: "inhale", duration: 2 },
-      { state: "exhale", duration: 3, description: "Exhale fully" },
+      { state: "exhale", duration: 3, description: "exhale fully" },
     ],
     breaths: [
       { state: "inhale", duration: 3 },
@@ -58,7 +63,7 @@ const excercises = {
     name: "Box Breathing",
     preparation: [
       { state: "inhale", duration: 2 },
-      { state: "exhale", duration: 3, description: "Exhale as much as you can" },
+      { state: "exhale", duration: 3, description: "exhale as much as you can" },
     ],
     breaths: [
       { state: "inhale", duration: 4 },
