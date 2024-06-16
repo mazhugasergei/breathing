@@ -1,6 +1,6 @@
 import { create } from "zustand"
 
-type CurrentBreathState = { stateNum: number; step: number }
+type CurrentSegmentState = { index: number; step: number }
 type Excercise = {
   name: string
   preparation: { state: string; duration: number; description?: string }[]
@@ -12,14 +12,14 @@ interface State {
   selectedExcercise: keyof typeof excercises
   started: boolean
   passedPreparation: boolean
-  currentBreath: CurrentBreathState | null
+  currentSegment: CurrentSegmentState | null
 }
 
 interface Actions {
   start: () => void
   stop: () => void
   passPreparation: (value?: boolean) => void
-  setCurrentBreath: (breathState: CurrentBreathState | null) => void
+  setCurrentSegment: (breathState: CurrentSegmentState | null) => void
 }
 
 // breathing may not start from "hold"
@@ -79,9 +79,9 @@ export const useStore = create<State & Actions>((set) => ({
   selectedExcercise: "test",
   started: false,
   passedPreparation: false,
-  currentBreath: null,
+  currentSegment: null,
   start: () => set((state) => ({ ...state, started: true })),
   stop: () => set((state) => ({ ...state, started: false })),
   passPreparation: (value = true) => set((state) => ({ ...state, passedPreparation: value })),
-  setCurrentBreath: (breathState) => set((state) => ({ ...state, currentBreath: breathState })),
+  setCurrentSegment: (breathState) => set((state) => ({ ...state, currentSegment: breathState })),
 }))

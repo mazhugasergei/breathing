@@ -8,15 +8,15 @@ export default () => {
   const start = useStore((state) => state.start)
   const passedPreparation = useStore((state) => state.passedPreparation)
   const passPreparation = useStore((state) => state.passPreparation)
-  const currentBreath = useStore((state) => state.currentBreath)
-  const setCurrentBreath = useStore((state) => state.setCurrentBreath)
+  const currentSegment = useStore((state) => state.currentSegment)
+  const setCurrentSegment = useStore((state) => state.setCurrentSegment)
 
   const [timeoutId, setTimeoutId] = useState<number>()
   const [sizeUnit, setSizeUnit] = useState("")
 
   const initialWidth = 50 // %
   const minWidth = 50 // %
-  const [currWidth, setCurrWidth] = useState(initialWidth) // %
+  const [currWidth, setCurrWidth] = useState(initialWidth)
 
   useEffect(() => {
     setSizeUnit(window.innerWidth > window.innerHeight ? "vh" : "vw")
@@ -27,10 +27,10 @@ export default () => {
 
   useEffect(() => {
     if (started) {
-      setCurrentBreath({ stateNum: 0, step: 0 })
+      setCurrentSegment({ index: 0, step: 0 })
     } else {
       passPreparation(false)
-      setCurrentBreath(null)
+      setCurrentSegment(null)
       if (timeoutId) clearTimeout(timeoutId)
       setTimeoutId(undefined)
       setCurrWidth(initialWidth)
@@ -38,12 +38,12 @@ export default () => {
   }, [started])
 
   useEffect(() => {
-    if (!currentBreath) return
+    if (!currentSegment) return
 
-    const currentSegment = passedPreparation ? "breaths" : "preparation"
-    const currentExcercise = excercises[selectedExcercise][currentSegment]
-    const currentState = currentExcercise[currentBreath.stateNum].state
-    const currentDuration = currentExcercise[currentBreath.stateNum].duration
+    const currentPart = passedPreparation ? "breaths" : "preparation"
+    const currentExcercise = excercises[selectedExcercise][currentPart]
+    const currentState = currentExcercise[currentSegment.index].state
+    const currentDuration = currentExcercise[currentSegment.index].duration
 
     setCurrWidth((prev) => {
       switch (currentState) {
@@ -56,29 +56,29 @@ export default () => {
       }
     })
 
-    const newStateNum = currentBreath.step === currentDuration - 1 ? currentBreath.stateNum + 1 : currentBreath.stateNum
-    const actualNewStateNum = newStateNum === currentExcercise.length ? 0 : newStateNum
-    const newStep = currentBreath.step === currentDuration - 1 ? 0 : currentBreath.step + 1
+    const newIndex = currentSegment.step === currentDuration - 1 ? currentSegment.index + 1 : currentSegment.index
+    const actualNewIndex = newIndex === currentExcercise.length ? 0 : newIndex
+    const newStep = currentSegment.step === currentDuration - 1 ? 0 : currentSegment.step + 1
     const timeoutId = setTimeout(() => {
       if (
         !passedPreparation &&
-        currentBreath.stateNum === currentExcercise.length - 1 &&
-        currentBreath.step === currentDuration - 1
+        currentSegment.index === currentExcercise.length - 1 &&
+        currentSegment.step === currentDuration - 1
       ) {
         passPreparation()
       }
-      setCurrentBreath({
-        stateNum: actualNewStateNum,
+      setCurrentSegment({
+        index: actualNewIndex,
         step: newStep,
       })
     }, 1000)
 
     setTimeoutId(timeoutId)
-  }, [currentBreath])
+  }, [currentSegment])
 
   return (
     <div
-      className={`min-w-[15rem] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 grid place-items-center`}
+      className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 grid place-items-center`}
       style={{
         width: sizeUnit === "vh" ? "40vh" : "50vw",
       }}
@@ -86,13 +86,13 @@ export default () => {
       <div
         className={`aspect-square flex flex-col items-center justify-center text-lg text-[#555] bg-[#eee] rounded-full overflow-hidden transition`}
         style={(() => {
-          const currentSegment = passedPreparation ? "breaths" : "preparation"
-          const currentExcercise = excercises[selectedExcercise][currentSegment]
-          const currentState = currentBreath ? currentExcercise[currentBreath.stateNum].state : "hold"
-          const currentDuration = currentBreath ? currentExcercise[currentBreath.stateNum].duration : 1
+          const currentPart = passedPreparation ? "breaths" : "preparation"
+          const currentExcercise = excercises[selectedExcercise][currentPart]
+          const currentState = currentSegment ? currentExcercise[currentSegment.index].state : "hold"
+          const currentDuration = currentSegment ? currentExcercise[currentSegment.index].duration : 1
 
           const prevState =
-            currentBreath && currentBreath.stateNum ? currentExcercise[currentBreath.stateNum - 1].state : null
+            currentSegment && currentSegment.index ? currentExcercise[currentSegment.index - 1].state : null
 
           const shadowWidth =
             currentState === "inhale" ? 5 : currentState === "exhale" ? 3 : prevState === "inhale" ? 2 : 1.5

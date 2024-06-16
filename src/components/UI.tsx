@@ -4,7 +4,7 @@ export default () => {
   const excercises = useStore((state) => state.excercises)
   const selectedExcercise = useStore((state) => state.selectedExcercise)
   const passedPreparation = useStore((state) => state.passedPreparation)
-  const currentBreath = useStore((state) => state.currentBreath)
+  const currentSegment = useStore((state) => state.currentSegment)
   const started = useStore((state) => state.started)
   const stop = useStore((state) => state.stop)
 
@@ -12,12 +12,12 @@ export default () => {
     <nav className="w-full absolute z-[-1] inset-0">
       {/* breath */}
       {started &&
-        currentBreath &&
+        currentSegment &&
         (() => {
-          const currentSegment = passedPreparation ? "breaths" : "preparation"
-          const currentExcercise = excercises[selectedExcercise][currentSegment]
-          const currentState = currentBreath ? currentExcercise[currentBreath.stateNum].state : "hold"
-          const currentDescription = currentExcercise[currentBreath.stateNum].description
+          const currentPart = passedPreparation ? "breaths" : "preparation"
+          const currentExcercise = excercises[selectedExcercise][currentPart]
+          const currentState = currentSegment ? currentExcercise[currentSegment.index].state : "hold"
+          const currentDescription = currentExcercise[currentSegment.index].description
           const text = currentDescription ?? currentState
 
           return <div className="w-full max-w-[50vw] absolute top-0 left-0 text-xl p-2">{text}</div>
@@ -25,12 +25,12 @@ export default () => {
 
       {/* seconds */}
       {started &&
-        currentBreath &&
+        currentSegment &&
         (() => {
-          const currentSegment = passedPreparation ? "breaths" : "preparation"
-          const currentExcercise = excercises[selectedExcercise][currentSegment]
-          const currentDuration = currentExcercise[currentBreath.stateNum].duration
-          return <div className="absolute top-0 right-0 text-3xl p-2">{currentDuration - currentBreath.step}</div>
+          const currentPart = passedPreparation ? "breaths" : "preparation"
+          const currentExcercise = excercises[selectedExcercise][currentPart]
+          const currentDuration = currentExcercise[currentSegment.index].duration
+          return <div className="absolute top-0 right-0 text-3xl p-2">{currentDuration - currentSegment.step}</div>
         })()}
 
       {/* end exercise */}
@@ -42,9 +42,18 @@ export default () => {
 
       {/* debug */}
       <div className="absolute bottom-0 left-0 p-2">
-        {!passedPreparation && <div>Preparation length: {excercises[selectedExcercise].preparation.length}</div>}
-        <div>Segment: {passedPreparation ? "excercise" : "preparation"}</div>
-        <div>Current breath: {JSON.stringify(currentBreath)}</div>
+        <div>started: {started.toString()}</div>
+        <div>passedPreparation: {passedPreparation.toString()}</div>
+        <div>
+          selectedExcercise: {selectedExcercise} (part: {passedPreparation ? "breaths" : "preparation"}, segments:{" "}
+          {(() => {
+            const currentPart = passedPreparation ? "breaths" : "preparation"
+            const currentExcercise = excercises[selectedExcercise][currentPart]
+            return currentExcercise.length
+          })()}
+          )
+        </div>
+        <div>currentSegment: {JSON.stringify(currentSegment)}</div>
       </div>
     </nav>
   )
